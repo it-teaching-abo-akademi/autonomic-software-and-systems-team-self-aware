@@ -34,15 +34,20 @@ class Executor(object):
     #TODO: this needs to be able to handle
     if status == Status.DRIVING:
       dest = self.knowledge.get_current_destination()
+      #print(dest)
       self.update_control(dest, [1], time_elapsed)
+
+  def return_knowledge(self):
+    return self.knowledge
 
   # TODO: steer in the direction of destination and throttle or brake depending on how close we are to destination
   # TODO: Take into account that exiting the crash site could also be done in reverse, so there might need to be additional data passed between planner and executor, or there needs to be some way to tell this that it is ok to drive in reverse during HEALING and CRASHED states. An example is additional_vars, that could be a list with parameters that can tell us which things we can do (for example going in reverse)
   def update_control(self, destination, additional_vars, delta_time):
     #calculate throttle and heading
     control = carla.VehicleControl()
-    control.throttle = 0.0
-    control.steer = 0.0
+    control.throttle = 5.0
+    control.steer = 0.5 #np.dot(np.linalg.norm(np.array(Planner.get_current_destination(Planner))), np.linalg.norm(np.array(destination)))
+    #control.steer = 0.0 #np.dot(np.linalg.norm(np.array(carla.Vector3D(42.5959, -4.3443, 1.8431))), np.linalg.norm(np.array(carla.Vector3D(22, -4, 1.8431))))
     control.brake = 0.0
     control.hand_brake = False
     self.vehicle.apply_control(control)
